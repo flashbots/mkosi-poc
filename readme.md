@@ -6,8 +6,15 @@ Prerequisites
 -------------
 
 - Nix should be installed and the `nix-command` and `flakes` features should be enabled.
+```shell
+curl -L https://nixos.org/nix/install | sh
+mkdir -p ~/.config/nix
+echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+```
 
 - Right now, I'm using the latest commit of mkosi directly with no patches, so the official nixpkgs patches to fix the hardcoded paths in mkosi aren't being applied. For this reason, you should install qemu and debian-archive-keyring since they will be used from the host for the time being. After I submit the updated patches to nixpkgs, this will no longer be necessary.
+
+- You might encounter apparmor permission issues on newer ubuntu versions, checkout workarounds [here](https://github.com/systemd/mkosi/issues/3265).
 
 Usage
 -----
@@ -22,7 +29,7 @@ mkosi --force
 Run with:
 
 ```shell
-sudo qemu-system-x86_64 \                                                                   mkosi-poc on  main  nix-shell-env took 15s 
+sudo qemu-system-x86_64 \
   -machine type=q35,smm=on \
   -m 2048M \
   -nographic \
@@ -30,6 +37,8 @@ sudo qemu-system-x86_64 \                                                       
   -drive file=/usr/share/edk2/x64/OVMF_VARS.4m.fd,if=pflash,format=raw \
   -kernel build/tdx-debian
 ```
+
+> Ubuntu's OVMF firmware is located under a different directory, namely `/usr/share/OVMF`
 
 
 Current Functionality
