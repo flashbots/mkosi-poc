@@ -1,0 +1,29 @@
+#!/bin/sh
+
+if [ ! -f /tmp/jwt.hex ]; then
+    openssl rand -hex 32 | tr -d "\n" | tee /tmp/jwt.hex
+    chown lighthouse:eth /tmp/jwt.hex
+    chmod 640 /tmp/jwt.hex
+fi
+
+mkdir -p /persistent/lighthouse
+chown lighthouse:eth /persistent/lighthouse
+
+exec chpst -u lighthouse:eth -n -10 /usr/bin/lighthouse \
+    bn \
+    --eth1 \
+    --checkpoint-sync-url https://mainnet.checkpoint.sigp.io \
+    --execution-endpoint http://localhost:8551 \
+    --execution-jwt /tmp/jwt.hex \
+    --suggested-fee-recipient 0x000000000000000000000000000000000000dead \
+    --http-allow-sync-stalled \
+    --always-prepare-payload \
+    --prepare-payload-lookahead 8000 \
+    --disable-deposit-contract-sync \
+    --http \
+    --port 9000 \
+    --http-port 3500 \
+    --metrics \
+    --metrics-address 127.0.0.1 \
+    --metrics-port 5054 \
+    --datadir /persistent/lighthouse

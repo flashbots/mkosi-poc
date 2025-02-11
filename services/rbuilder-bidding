@@ -1,0 +1,16 @@
+#!/bin/sh
+exec 2>&1
+
+mkdir -p /var/run/rbuilder
+exec bwrap \
+    --ro-bind /usr /usr \
+    --ro-bind /lib /lib \
+    --ro-bind /lib64 /lib64 \
+    --ro-bind /bin /bin \
+    --ro-bind /sbin /sbin \
+    --ro-bind /etc/bidding.toml /config.toml \
+    --bind /var/run/rbuilder /var/run/rbuilder \
+    --proc /proc \
+    --dev /dev \
+    --clearenv --unshare-pid \
+    bidding-service /config.toml

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Console over serial
+setsid sh -c 'exec bash </dev/ttyS0 >/dev/ttyS0 2>&1' &

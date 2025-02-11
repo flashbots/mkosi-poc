@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euxo pipefail
+
+# Create groups/users
+mkosi-chroot groupadd -r eth
+mkosi-chroot useradd -r -s /bin/false -G eth reth
+mkosi-chroot useradd -r -s /bin/false -G eth lighthouse
+mkosi-chroot useradd -r -s /bin/false -G eth rbuilder
+
+# Install buildernet services
+source scripts/install_service.sh
+install_service lighthouse
+install_service reth-sync
+install_service reth
+install_service rbuilder
+install_service rbuilder-bidding

@@ -1,0 +1,33 @@
+#!/bin/sh
+exec 2>&1
+
+# Ensure reth is running
+echo "Waiting for reth to start..."
+until nc -z localhost 8551; do
+    sleep 1
+done
+echo "Reth is up"
+
+# Ensure bidding service is running
+echo "Waiting for bidding service to start..."
+until [ -S /var/run/rbuilder/rpc_bidding_server.sock ]; do
+    sleep 1
+done
+echo "Bidding service is up"
+
+mkdir -p /persistent/rbuilder /var/run/rbuilder
+chown -R rbuilder:eth /persistent/rbuilder /etc/rbuilder/config /var/run/rbuilder
+chmod 640 /etc/rbuilder.config
+
+# Create initial blocklist file if needed
+if [ ! -f /persistent/rbuilder/rbuilder.blocklist.json ]; then
+    echo '{}' > /persistent/rbuilder/rbuilder.blocklist.json
+    chmod 640 /persistent/rbuilder/rbuilder.blocklist.json
+    chown rbuilder:rbuilder /persistent/rbuilder/rbuilder.blocklist.json
+fi
+
+# Ensure reth access
+chmod 770 /persistent/reth /persistent/reth/static_files /persistent/reth/db
+chmod 660 /persistent/reth/db/mdbx.lck /persistent/reth/db/mdbx.dat /tmp/reth.ipc
+
+exec chpst -u rbuilder:eth -n -10 /usr/bin/rbuilder run /etc/rbuilder/config

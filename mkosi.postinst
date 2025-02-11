@@ -1,9 +1,0 @@
-#!/bin/bash
-set -euxo pipefail
-
-# Example inittab for root shell
-cat > "$BUILDROOT/etc/inittab" <<EOF
-id:2:initdefault:
-si::sysinit:/etc/init.d/rcS
-s0:2345:respawn:/bin/sh
-EOF

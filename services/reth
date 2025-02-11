@@ -1,0 +1,38 @@
+#!/bin/sh
+exec 2>&1
+
+# Ensure lighthouse is running
+echo "Waiting for lighthouse to start..."
+until nc -z localhost 9000; do
+    sleep 1
+done
+echo "Lighthouse is up"
+
+# Ensure sync is complete
+echo "Waiting for reth sync to complete..."
+until [ -f /tmp/reth-sync.done ]; do
+    sleep 1
+done
+echo "Reth sync complete"
+
+mkdir -p /persistent/reth
+chown reth:eth /persistent/reth
+
+exec chpst -u reth:eth -n -10 /usr/bin/reth \
+    node \
+    --full \
+    --datadir "/persistent/reth" \
+    --authrpc.addr 127.0.0.1 \
+    --authrpc.jwtsecret "/tmp/jwt.hex" \
+    --authrpc.port 8551 \
+    --http \
+    --http.addr 127.0.0.1 \
+    --http.port 8545 \
+    --http.api "eth,net,web3,trace,rpc,debug,txpool" \
+    --ws \
+    --ws.addr 127.0.0.1 \
+    --ws.port 8546 \
+    --ws.api "eth,net,trace,web3,rpc,debug,txpool" \
+    --log.stdout.format json \
+    --log.file.max-files 0 \
+    --metrics "127.0.0.1:9001"

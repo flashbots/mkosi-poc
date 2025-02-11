@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Mount persistent storage
+if [ -e /dev/vda ]; then
+    if ! blkid /dev/vda | grep -q 'TYPE="ext4"'; then
+        mkfs.ext4 -F /dev/vda
+    fi
+    mkdir -p /persistent
+    mount /dev/vda /persistent || echo "Failed to mount persistent storage"
+fi

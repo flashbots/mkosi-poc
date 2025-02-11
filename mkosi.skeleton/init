@@ -1,10 +1,16 @@
 #!/bin/sh
 
-# Mount the essential filesystems
-mkdir -p /dev /proc /sys /run /dev/pts /dev/shm
+# Mount essential filesystems
+mkdir -p /dev /proc /sys /run /run/lock /dev/pts /dev/shm
 mount -t proc -o noexec,nosuid,nodev proc /proc
 mount -t sysfs -o noexec,nosuid,nodev sysfs /sys
 mount -t devtmpfs -o exec,nosuid devtmpfs /dev
 
-# Hand over to sysvinit
-exec /sbin/init
+# Workaround to make pivot_root work
+# https://aconz2.github.io/2024/07/29/container-from-initramfs.html
+exec unshare --mount sh -c '
+    mkdir /@
+    mount --rbind / /@
+    cd /@ && mount --move . /
+    exec chroot . /sbin/runit
+'

@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {} }:
 pkgs.stdenv.mkDerivation rec {
   pname = "linux-tdx";
-  version = "6.1.123";
+  version = "6.13.1";
 
   depsBuildBuild = with pkgs.pkgsBuildBuild; [
     stdenv.cc
@@ -16,7 +16,7 @@ pkgs.stdenv.mkDerivation rec {
     owner = "gregkh";
     repo = "linux";
     rev = "v${version}";
-    sha256 = "sha256-WLkLJEICBEXCMPRadMFsYWweXz6E5Kk323OgJz5Gizg=";
+    sha256 = "sha256-eiceHrOC2K2nBEbs7dD9AfpCNesorMhC9X24UtSPkMY=";
   };
 
   # patches = [];

@@ -1,2 +1,9 @@
-build*/
+build/
 mkosi/
+env.json
+mkosi.packages/
+mkosi.cache/
+mkosi.builddir/
+*.qcow2
+.claudesync/
+.claudeignore

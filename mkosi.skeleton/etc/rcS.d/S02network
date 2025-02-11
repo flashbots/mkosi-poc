@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Connect to the network
+ip link set lo up
+ip addr add 127.0.0.1/8 dev lo
+ip link set eth0 up
+echo nameserver 8.8.8.8 > /etc/resolv.conf
+echo nameserver 8.8.4.4 >> /etc/resolv.conf
+chattr +i /etc/resolv.conf # don't let dhcpcd overwrite dns
+udhcpc -i eth0 2> /dev/null
