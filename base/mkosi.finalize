@@ -1,0 +1,4 @@
+#!/bin/bash
+set -euxo pipefail
+
+mkosi-chroot s6-rc-compile "/etc/s6-rc/compiled" "/etc/s6-rc/source"

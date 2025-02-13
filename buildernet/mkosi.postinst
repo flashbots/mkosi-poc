@@ -11,6 +11,8 @@ mkosi-chroot useradd -r -s /bin/false -G eth rbuilder
 source scripts/install_service.sh
 install_service lighthouse
 install_service reth-sync
-install_service reth
-install_service rbuilder
+install_service reth \
+    lighthouse reth-sync
 install_service rbuilder-bidding
+install_service rbuilder \
+    reth rbuilder-bidding

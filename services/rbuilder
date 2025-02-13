@@ -30,4 +30,4 @@ fi
 chmod 770 /persistent/reth /persistent/reth/static_files /persistent/reth/db
 chmod 660 /persistent/reth/db/mdbx.lck /persistent/reth/db/mdbx.dat /tmp/reth.ipc
 
-exec chpst -u rbuilder:eth -n -10 /usr/bin/rbuilder run /etc/rbuilder/config
+exec s6-setuidgid rbuilder /usr/bin/rbuilder run /etc/rbuilder/config

@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euxo pipefail
+
+if [ -z "$KERNEL_IMAGE" ] || [ -z "$KERNEL_VERSION" ]; then
+    echo "KERNEL_IMAGE and KERNEL_VERSION must be set"
+    exit 1
+fi
+
+# Copy kernel and config to a place where mkosi can find it
+mkdir -p "$DESTDIR/usr/lib/modules/$KERNEL_VERSION"
+cp "$KERNEL_IMAGE" "$DESTDIR/usr/lib/modules/$KERNEL_VERSION/vmlinuz"
+
+# Copy systemd-boot EFI stub to the expected location
+export EFI_FOLDER=usr/lib/systemd/boot/efi
+mkdir -p $DESTDIR/$EFI_FOLDER
+cp $BUILDROOT/$EFI_FOLDER/linuxx64.efi.stub $DESTDIR/$EFI_FOLDER

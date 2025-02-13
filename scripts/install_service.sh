@@ -2,17 +2,49 @@
 
 install_service() {
     local svc="$1"
-    local svcdir="$BUILDROOT/etc/runit/runsvdir/default/$svc"
+    local type="longrun"
+    
+    # Parse arguments
+    if [ "$1" = "--oneshot" ]; then
+        type="oneshot"
+        shift
+        svc="$1"
+    fi
+    shift
 
-    mkdir -p "$svcdir/log" "$BUILDROOT/var/log/$svc"
+    # Create service and logger directories in source
+    local svcdir="$BUILDROOT/etc/s6-rc/source/$svc"
+    local logdir="$BUILDROOT/etc/s6-rc/source/${svc}-log"
+    mkdir -p "$svcdir/dependencies.d" "$logdir"
 
-    # Copy service from local services/ folder
-    cp "services/$svc" "$svcdir/run"
+    # Configure main service
+    echo "$type" > "$svcdir/type"
+    if [ "$type" = "oneshot" ]; then
+        install -m755 "services/$svc" "$svcdir/up"
+    else
+        install -m755 "services/$svc" "$svcdir/run"
+    fi
+    
+    # Add any dependencies
+    for dep in "$@"; do
+        touch "$svcdir/dependencies.d/$dep"
+    done
 
-    # Create basic logger using svlogd
-    echo '#!/bin/sh' > "$svcdir/log/run"
-    echo 'exec 2>&1' >> "$svcdir/log/run"
-    echo "exec svlogd -tt /var/log/$svc" >> "$svcdir/log/run"
+    # Add health check if exists
+    if [ -f "services/$svc.check" ]; then
+        echo "notification-fd" > "$svcdir/notification-fd"
+        install -m755 "services/$svc.check" "$svcdir/notify"
+    fi
 
-    chmod 755 "$svcdir"/{,log/}run
+    # Configure logger 
+    echo "longrun" > "$logdir/type"
+    echo "$svc" > "$logdir/consumer-for"
+    echo "pipeline-${svc}" > "$logdir/pipeline-name"
+    echo "#!/bin/sh
+exec s6-log -b n20 s1000000 /var/log/$svc" > "$logdir/run"
+    chmod 755 "$logdir/run"
+    mkdir -p "$BUILDROOT/var/log/$svc"
+
+    # Connect service to logger
+    echo "${svc}-log" > "$svcdir/producer-for"
 }

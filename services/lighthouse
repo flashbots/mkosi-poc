@@ -1,4 +1,5 @@
 #!/bin/sh
+exec 2>&1
 
 if [ ! -f /tmp/jwt.hex ]; then
     openssl rand -hex 32 | tr -d "\n" | tee /tmp/jwt.hex
@@ -9,7 +10,7 @@ fi
 mkdir -p /persistent/lighthouse
 chown lighthouse:eth /persistent/lighthouse
 
-exec chpst -u lighthouse:eth -n -10 /usr/bin/lighthouse \
+exec s6-setuidgid lighthouse /usr/bin/lighthouse \
     bn \
     --eth1 \
     --checkpoint-sync-url https://mainnet.checkpoint.sigp.io \

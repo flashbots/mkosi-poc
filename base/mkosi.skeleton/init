@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Mount essential filesystems
+mkdir -p /dev /proc /sys /run /run/lock /dev/pts /dev/shm
+busybox mount -t proc -o noexec,nosuid,nodev proc /proc
+busybox mount -t sysfs -o noexec,nosuid,nodev sysfs /sys
+busybox mount -t devtmpfs -o exec,nosuid devtmpfs /dev
+
+# Run early boot scripts
+for script in /etc/init/*; do
+    [ -x "$script" ] && "$script" > /var/log/init.log 2>&1    
+done
+
+# Start s6
+mkdir -p /run/service
+# dirty hack to make sure s6-svscan starts before s6-rc-init runs. i wouldn't use this in production)
+(sleep 1 && s6-rc-init -t0 -c /etc/s6-rc/compiled -l /run/s6-rc /run/service) &
+exec s6-svscan -t0 /run/service

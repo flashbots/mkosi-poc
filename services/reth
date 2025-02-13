@@ -18,7 +18,7 @@ echo "Reth sync complete"
 mkdir -p /persistent/reth
 chown reth:eth /persistent/reth
 
-exec chpst -u reth:eth -n -10 /usr/bin/reth \
+exec s6-setuidgid reth /usr/bin/reth \
     node \
     --full \
     --datadir "/persistent/reth" \

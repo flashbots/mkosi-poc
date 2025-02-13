@@ -6,5 +6,5 @@ if [ -e /dev/vda ]; then
         mkfs.ext4 -F /dev/vda
     fi
     mkdir -p /persistent
-    mount /dev/vda /persistent || echo "Failed to mount persistent storage"
+    busybox mount /dev/vda /persistent || echo "Failed to mount persistent storage"
 fi
