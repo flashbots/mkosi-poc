@@ -5,7 +5,11 @@ Mkosi Debian Proof of Concept
 Prerequisites
 -------------
 
-- Nix should be installed and the `nix-command` and `flakes` features should be enabled.
+- Nix should be installed (single user mode is sufficient) and the `nix-command` and `flakes` features should be enabled.
+```
+sh <(curl -L https://nixos.org/nix/install) --no-daemon
+nix --extra-experimental-features nix-command develop --extra-experimental-features flakes -c $SHELL
+```
 
 - For now, the Debian archive keyring needs to be installed on your computer. This will be fixed in a future update
 
