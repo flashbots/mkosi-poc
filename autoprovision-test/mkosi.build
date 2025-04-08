@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euxo pipefail
+
+source scripts/make_git_package.sh
+
+make_git_package "tee-service-provisioning-backend" "main" "https://github.com/Ruteri/tee-service-provisioning-backend" 'go build -trimpath -ldflags "-s -w -buildid= " -v -o ./build/autoprovision ./instanceutils/autoprovision' "build/autoprovision:/usr/bin/autoprovision"

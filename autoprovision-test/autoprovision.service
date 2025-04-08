@@ -1,0 +1,15 @@
+[Unit]
+Description=Autoprovisioner
+After=network-setup.service
+Wants=network-setup.service
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/usr/bin/autoprovision --app-contract 0000000000000000000000000000000000000000 --debug-local-provider --device-glob /dev/sda
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=minimal.target
