@@ -1,0 +1,14 @@
+[
+    {
+        "measurement_id": "azure-tdx",
+        "attestation_type": "azure-tdx",
+        "measurements": {
+        }
+    },
+    {
+        "measurement_id": "dcap-tdx",
+        "attestation_type": "dcap-tdx",
+        "measurements": {
+        }
+    }
+]

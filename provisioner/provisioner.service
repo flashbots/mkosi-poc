@@ -1,0 +1,17 @@
+[Unit]
+Description=Provisioner
+After=network-setup.service
+Wants=network-setup.service
+
+[Service]
+Type=exec
+User=root
+Group=root
+ExecStart=/usr/bin/provisioner --rpc-addr https://1rpc.io/sepolia --listen-addr localhost:8080 --simple-kms-seed 0000000000000000000000000000000000000000000000000000000000000000 --remote-attestation-provider http://ns31695324.ip-141-94-163.eu:10080
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=minimal.target

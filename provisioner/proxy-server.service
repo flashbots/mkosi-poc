@@ -1,0 +1,17 @@
+[Unit]
+Description=Provisioner CVM Proxy
+After=provisioner.service
+Wants=provisioner.service
+
+[Service]
+Type=exec
+User=root
+Group=root
+ExecStart=/usr/bin/proxy-server --listen-addr 0.0.0.0:8079 --target-addr http://localhost:8080 --server-attestation-type dummy --dev-dummy-dcap http://ns31695324.ip-141-94-163.eu:10080 --client-measurements /measurements.json
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=minimal.target
