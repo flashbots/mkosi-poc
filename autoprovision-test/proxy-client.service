@@ -1,0 +1,17 @@
+[Unit]
+Description=Provisioner client CVM Proxy
+After=network-setup.service
+Wants=network-setup.service
+
+[Service]
+Type=exec
+User=root
+Group=root
+ExecStart=/usr/bin/proxy-client --listen-addr 127.0.0.1:8078 --target-addr https://ns31695324.ip-141-94-163.eu:10079 --client-attestation-type dummy --dev-dummy-dcap http://ns31695324.ip-141-94-163.eu:10080
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=minimal.target

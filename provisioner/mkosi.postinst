@@ -1,0 +1,10 @@
+#!/bin/bash
+set -euxo pipefail
+
+# Install systemd service units
+SERVICE_DIR="$BUILDROOT/etc/systemd/system"
+mkdir -p "$SERVICE_DIR"
+
+install -m 644 "provisioner/provisioner.service" "$SERVICE_DIR/"
+install -m 644 "provisioner/proxy-server.service" "$SERVICE_DIR/"
+install -m 644 "provisioner/measurements.json" "$BUILDROOT/measurements.json"

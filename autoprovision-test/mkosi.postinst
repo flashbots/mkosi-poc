@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euxo pipefail
+
+# Install systemd service units
+SERVICE_DIR="$BUILDROOT/etc/systemd/system"
+mkdir -p "$SERVICE_DIR"
+
+install -m 644 "autoprovision-test/autoprovision.service" "$SERVICE_DIR/"
+install -m 644 "autoprovision-test/proxy-client.service" "$SERVICE_DIR/"

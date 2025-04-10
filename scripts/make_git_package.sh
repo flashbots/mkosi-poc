@@ -1,6 +1,4 @@
 #!/bin/bash
-#
-# Note env variables: DESTDIR, BUILDROOT, GOCACHE
 
 make_git_package() {
     local package="$1"
