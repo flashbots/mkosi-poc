@@ -1,7 +1,7 @@
 [Unit]
 Description=Autoprovisioner
-After=network-setup.service
-Wants=network-setup.service
+After=proxy-client.service
+Wants=proxy-client.service
 
 [Service]
 Type=oneshot
