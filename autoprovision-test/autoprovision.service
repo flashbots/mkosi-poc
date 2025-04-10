@@ -7,7 +7,7 @@ Wants=network-setup.service
 Type=oneshot
 User=root
 Group=root
-ExecStart=/usr/bin/autoprovision --app-contract 0000000000000000000000000000000000000000 --debug-local-provider --device-glob /dev/sda
+ExecStart=/usr/bin/autoprovision --app-contract 0x05ED0BF33dd0c0D5a7292cec365de785322b8F04 --provisioning-server-addr http://127.0.0.1:8078 --device-glob /dev/sda
 StandardOutput=journal
 StandardError=journal
 
