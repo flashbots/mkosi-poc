@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Note env variables: DESTDIR, BUILDROOT, GOCACHE
+# Note env variables: DESTDIR, BUILDROOT, GOCACHE, BUILDDIR
 
 make_git_package() {
     local package="$1"
@@ -10,29 +10,36 @@ make_git_package() {
     # All remaining arguments are artifact mappings in src:dest format
     
     mkdir -p "$DESTDIR/usr/bin"
+    local cache_dir="$BUILDDIR/${package}-${version}"
     
-    # Clone the repository
+    # Use cached artifacts if available
+    if [ -n "$cache_dir" ] && [ -d "$cache_dir" ] && [ "$(ls -A "$cache_dir" 2>/dev/null)" ]; then
+        echo "Using cached artifacts for $package version $version"
+        for artifact_map in "${@:5}"; do
+            local src="${artifact_map%%:*}"
+            local dest="${artifact_map#*:}"
+            mkdir -p "$(dirname "$DESTDIR$dest")"
+            cp "$cache_dir/$(echo "$src" | tr '/' '_')" "$DESTDIR$dest"
+        done
+        return 0
+    fi
+    
+    # Build from source
     local build_dir="$BUILDROOT/build/$package"
     git clone --depth 1 --branch "$version" "$git_url" "$build_dir"
-
-    # Build inside mkosi chroot with custom build command
     mkosi-chroot bash -c "cd '/build/$package' && $build_cmd"
-    
-    # Process each artifact mapping
+
+    # Copy artifacts to image and cache
     for artifact_map in "${@:5}"; do
-        # Split the mapping into source and destination
-        local src=$(echo "$artifact_map" | cut -d':' -f1)
-        local dest=$(echo "$artifact_map" | cut -d':' -f2)
-        
-        # Create destination directory if needed
+        local src="${artifact_map%%:*}"
+        local dest="${artifact_map#*:}"
+
+        # Copy the built artifact to the destination
         mkdir -p "$(dirname "$DESTDIR$dest")"
-        
-        # Copy the artifact
         cp "$build_dir/$src" "$DESTDIR$dest"
+    
+        # Cache artifact
+        mkdir -p "$cache_dir"
+        cp "$build_dir/$src" "$cache_dir/$(echo "$src" | tr '/' '_')"
     done
 }
-
-# Example usage:
-# make_git_package "myapp" "v1.0.0" "https://github.com/user/myapp.git" "make build" \
-#    "bin/myapp:/usr/bin/myapp" \
-#    "config/myapp.conf:/etc/myapp/myapp.conf"

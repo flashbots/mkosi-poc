@@ -1,0 +1,8 @@
+- issues with pivot_root?
+- rules for lighthouse?
+- update mkosi
+- release tags for external repos
+
+- make vhd (1MB aligned)
+  - truncate -s %1MiB $IMAGE.wic
+  - qemu-img convert -O vpc -o subformat=fixed,force_size $IMAGE.wic $IMAGE.wic.vhd

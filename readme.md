@@ -40,7 +40,11 @@ sudo qemu-system-x86_64 \
   -drive if=pflash,format=raw,readonly=on,file=/usr/share/edk2/x64/OVMF_CODE.secboot.4m.fd \
   -drive file=/usr/share/edk2/x64/OVMF_VARS.4m.fd,if=pflash,format=raw \
   -kernel build/tdx-debian \
-  -drive file=persistent.qcow2,format=qcow2,if=virtio,cache=writeback
+  -netdev user,id=net0 \
+  -device virtio-net-pci,netdev=net0 \
+  -device virtio-scsi-pci,id=scsi0 \
+  -drive file=persistent.qcow2,format=qcow2,if=none,id=disk0 \
+  -device scsi-hd,drive=disk0,bus=scsi0.0,channel=0,scsi-id=0,lun=10
 ```
 
 Developing
@@ -52,7 +56,7 @@ Just running `mkosi` itself will not trigger a kernel build. To rebuild the kern
 
 ```shell
 exit # if you're currently in the nix develop shell
-nix build --rebuild flake.nix # not needed if you only modified kernel.nix
+nix-build kernel.nix # not needed if you only modified kernel.nix
 nix develop -c $SHELL
 ```
 

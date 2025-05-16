@@ -54,6 +54,6 @@ build_rust_package() {
     "
 
     # Cache and install the built binary
-    cp "$build_dir/target/release/$package" "$cached_binary"
-    cp "$cached_binary" "$dest_path"
+    install -m 755 "$build_dir/target/release/$package" "$cached_binary"
+    install -m 755 "$cached_binary" "$dest_path"
 }
