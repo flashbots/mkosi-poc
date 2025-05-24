@@ -5,11 +5,11 @@ source scripts/build_rust_package.sh
 
 build_rust_package \
     "lighthouse" \
-    "v5.3.0" \
+    "v7.0.1" \
     "https://github.com/sigp/lighthouse.git" \
     "$LIGHTHOUSE_BINARY" \
     "modern" \
-    "-l z -l zstd"
+    "-l z -l zstd -l snappy"
 
 build_rust_package \
     "reth" \

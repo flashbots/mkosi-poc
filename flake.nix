@@ -6,7 +6,6 @@
     system = "x86_64-linux";
     pkgs = import nixpkgs { inherit system; };
     kernel = import ./kernel.nix { inherit pkgs; };
-    mkosi = pkgs.mkosi;
     reprepro = pkgs.stdenv.mkDerivation rec {
       name = "reprepro-${version}";
       version = "4.16.0";
@@ -25,6 +24,13 @@
         wrapProgram "$out/bin/reprepro" --prefix PATH : "${pkgs.gnupg}/bin"
       '';
     };
+    mkosi = pkgs.mkosi.override {
+      extraDeps = with pkgs; [ 
+        apt dpkg gnupg debootstrap
+        squashfsTools dosfstools e2fsprogs mtools mustache-go
+        cryptsetup util-linux zstd
+      ] ++ [ reprepro ];
+    };
   in {
     packages.${system} = {
       kernel = kernel;
@@ -32,11 +38,7 @@
     };
 
     devShells.${system}.default = pkgs.mkShell {
-      nativeBuildInputs = with pkgs; [
-        apt dpkg gnupg debootstrap
-        squashfsTools dosfstools e2fsprogs mtools mustache-go
-        cryptsetup util-linux zstd qemu
-      ] ++ [ reprepro mkosi ];
+      nativeBuildInputs = [ pkgs.qemu mkosi ];
 
       KERNEL_IMAGE = "${kernel}/bzImage";
       KERNEL_VERSION = kernel.version;

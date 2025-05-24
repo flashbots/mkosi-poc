@@ -27,6 +27,7 @@ debloat_paths=(
     "/usr/share/mime"
     "/usr/lib/modules"
     "/usr/lib/udev/hwdb.d"
+    "/usr/lib/udev/hwdb.bin"
     "/usr/lib/systemd/catalog"
     "/usr/lib/systemd/user"
     "/usr/lib/systemd/user-generators"
@@ -35,7 +36,6 @@ debloat_paths=(
     "/usr/lib/tmpfiles.d"
     "/etc/systemd/network"
     "/etc/credstore"
-    "/usr/lib/x86_64-linux-gnu/security"
 )
 
 for p in "${debloat_paths[@]}"; do rm -rf "$BUILDROOT$p"; done
