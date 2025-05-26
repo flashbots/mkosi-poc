@@ -1,14 +1,13 @@
 [Unit]
 Description=RBuilder Bidding Service
-After=network-setup.service persistence-setup.service
-ConditionPathExists=/persistent
+After=network.target network-setup.service persistent-mount.service rbuilder.service
+Requires=network-setup.service persistent-mount.service rbuilder.service
 
 [Service]
 Type=exec
 User=rbuilder
 Group=eth
 WorkingDirectory=/var/run/rbuilder
-ExecStartPre=/usr/bin/rbuilder-init
 ExecStart=/usr/bin/bwrap \
     --ro-bind /usr /usr \
     --ro-bind /lib /lib \

@@ -22,6 +22,7 @@ systemd_bin_whitelist=(
     "systemctl"
     "journalctl"
     "systemd"
+    "systemd-tty-ask-password-agent"
 )
 
 mkosi-chroot dpkg-query -L systemd | grep -E '^/usr/bin/' | while read -r bin_path; do
