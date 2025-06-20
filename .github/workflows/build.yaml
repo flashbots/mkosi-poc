@@ -1,0 +1,49 @@
+name: Build mkosi Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-mkosi:
+    runs-on: warp-ubuntu-latest-x64-8x
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      # TODO: Setup Warp cache
+      # - name: Setup Warp cache
+      #   uses: WarpBuilds/cache@v1
+      #   with:
+      #     path: ~/.cache/mkosi/
+      #     key: ${{ runner.os }}-mkosi-cache-${{ hashFiles('**/mkosi.conf', '**/mkosi.packages') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-mkosi-cache-
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            qemu-system-x86 qemu-utils \
+            debian-archive-keyring systemd-boot reprepro xz-utils
+
+      - name: Configure Nix
+        run: |
+          mkdir -p ~/.config/nix
+          echo 'experimental-features = nix-command flakes' > ~/.config/nix/nix.conf
+
+      # Building tdx-image for testing
+      - name: Build mkosi image using nix
+        run: |
+          mkdir -p  ~/.cache/mkosi/
+          ix develop --command mkosi --force -I tdx-dummy.conf
