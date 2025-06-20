@@ -3,9 +3,12 @@ name: Build mkosi Image
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - feat/add-warp-ci # TODO: Remove this once the CI is working
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build-mkosi:
