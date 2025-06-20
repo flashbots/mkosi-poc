@@ -13,6 +13,24 @@ nix --extra-experimental-features nix-command develop --extra-experimental-featu
 
 - For now, the Debian archive keyring needs to be installed on your computer. This will be fixed in a future update
 
+```shell
+sudo apt update
+sudo apt install -y debian-archive-keyring
+```
+
+- Install QEMU and utilities:
+
+```shell
+sudo apt update
+sudo apt install -y qemu-system-x86 qemu-utils
+```
+
+- Create the mkosi cache directory:
+
+```shell
+mkdir -p ~/.cache/mkosi
+```
+
 Usage
 -----
 
