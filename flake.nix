@@ -5,7 +5,6 @@
   let
     system = "x86_64-linux";
     pkgs = import nixpkgs { inherit system; };
-    kernel = import ./kernel.nix { inherit pkgs; };
     reprepro = pkgs.stdenv.mkDerivation rec {
       name = "reprepro-${version}";
       version = "4.16.0";
@@ -32,17 +31,8 @@
       ] ++ [ reprepro ];
     };
   in {
-    packages.${system} = {
-      kernel = kernel;
-      default = kernel;
-    };
-
     devShells.${system}.default = pkgs.mkShell {
       nativeBuildInputs = [ pkgs.qemu mkosi ];
-
-      KERNEL_IMAGE = "${kernel}/bzImage";
-      KERNEL_VERSION = kernel.version;
-
       shellHook = ''
         mkdir -p mkosi.packages mkosi.cache mkosi.builddir
       '';
