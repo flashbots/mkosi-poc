@@ -38,6 +38,11 @@ For more information about this repository, see [the Flashbots collective post](
    # On other systems, download via package manager or use Docker approach below
    ```
 
+4. Ensure mkosi cache directory exists:
+   ```bash
+   mkdir -p ~/.cache/mkosi
+   ```
+
 ### Building Images
 
 1. **Enter the development environment**:
